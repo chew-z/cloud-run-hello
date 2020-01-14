@@ -148,6 +148,7 @@ func makeAuthenticatedRequest(idToken string, url string) {
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Add("content-type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+idToken)
 	resp, err := client.Do(req)
 	if err != nil {
