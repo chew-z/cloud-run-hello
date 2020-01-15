@@ -51,10 +51,10 @@ func main() {
 		log.Printf("Verify %v", verified)
 	}
 	u := "https://example.com"
-	makeAuthenticatedRequest(token, u)
+	uBody := makeAuthenticatedRequest(token, u)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hi there, I love %s!", "Cloud Run")
+		fmt.Fprintf(w, uBody)
 	})
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
@@ -144,7 +144,7 @@ func verifyGoogleIDToken(ctx context.Context, aud string, token string) (bool, e
 	return true, nil
 }
 
-func makeAuthenticatedRequest(idToken string, url string) {
+func makeAuthenticatedRequest(idToken string, url string) string {
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
@@ -162,5 +162,6 @@ func makeAuthenticatedRequest(idToken string, url string) {
 	}
 
 	bodyString := string(bodyBytes)
-	log.Printf("Authenticated Response: %v", bodyString)
+	// log.Printf("Authenticated Response: %v", bodyString)
+	return bodyString
 }
