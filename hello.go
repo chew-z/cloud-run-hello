@@ -41,7 +41,7 @@ func main() {
 	ctx := context.Background()
 	projectID := getProjectID()
 	log.Printf("GOOGLE_PROJECT_ID: %s", projectID)
-	audience := "http://www.example.com"
+	audience := "TIMEZONES_CLOUD_FUNCTION"
 	token := getJWToken(audience)
 	if token != "" {
 		verified, err := verifyGoogleIDToken(ctx, audience, token)
@@ -49,7 +49,7 @@ func main() {
 			log.Printf(err.Error())
 		}
 		log.Printf("Verify %v", verified)
-		u := "https://example.com"
+		u := os.Getenv("TIMEZONES_CLOUD_FUNCTION")
 		uBody = makeAuthenticatedRequest(token, u)
 	}
 	r := gin.Default()

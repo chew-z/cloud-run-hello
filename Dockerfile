@@ -16,13 +16,17 @@ RUN CGO_ENABLED=0 GOOS=linux go build -v -o hello
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
 # Use Google managed base image
 # https://cloud.google.com/container-registry/docs/managed-base-images
-FROM marketplace.gcr.io/google/ubuntu1804:latest
+FROM marketplace.gcr.io/google/debian9:latest
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /go/src/cloudrun/hello/hello /hello
 
 # Copy template
-COPY index.html /index.html
+# COPY index.html /index.html
+
+
+# Set environment vars
+ENV TIMEZONES_CLOUD_FUNCTION=https://europe-west1-go-spotify-262707.cloudfunctions.net/TimeZones
 
 # Run the web service on container startup.
 CMD ["/hello"]
