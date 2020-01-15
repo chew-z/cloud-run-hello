@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc"
+	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -36,12 +37,11 @@ func main() {
 		port = "8080"
 	}
 	log.Printf("Hello from Cloud Run! The container started successfully and is listening for HTTP requests on %s.", port)
-
+	uBody := " Hello World! Love and peace"
 	ctx := context.Background()
 	projectID := getProjectID()
 	log.Printf("GOOGLE_PROJECT_ID: %s", projectID)
 	audience := "http://www.example.com"
-
 	token := getJWToken(audience)
 	if token != "" {
 		verified, err := verifyGoogleIDToken(ctx, audience, token)
@@ -49,15 +49,19 @@ func main() {
 			log.Printf(err.Error())
 		}
 		log.Printf("Verify %v", verified)
+		u := "https://example.com"
+		uBody = makeAuthenticatedRequest(token, u)
 	}
-	u := "https://example.com"
-	uBody := makeAuthenticatedRequest(token, u)
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, uBody)
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
 	})
-
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+	r.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, uBody)
+	})
+	r.Run() // listen and serve on 0.0.0.0:8080
 }
 
 // Get project ID from metadata server
