@@ -120,7 +120,7 @@ func getJWToken(audience string) string {
 	}
 	// convert response.Body to text
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err == nil {
+	if err != nil {
 		log.Println(err.Error())
 		return jwToken
 	}
