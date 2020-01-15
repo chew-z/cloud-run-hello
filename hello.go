@@ -59,7 +59,10 @@ func main() {
 		})
 	})
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, uBody)
+		//Write your 200 header status (or other status codes, but only WriteHeader once)
+		c.Writer.WriteHeader(http.StatusOK)
+		//Convert your cached html string to byte array
+		c.Writer.Write([]byte(uBody))
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
