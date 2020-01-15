@@ -46,7 +46,7 @@ func main() {
 	if token != "" {
 		verified, err := verifyGoogleIDToken(ctx, audience, token)
 		if err != nil {
-			log.Panic(err)
+			log.Printf(err.Error())
 		}
 		log.Printf("Verify %v", verified)
 	}
@@ -74,7 +74,7 @@ func getProjectID() string {
 		defer res.Body.Close()
 		responseBody, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf(err.Error())
 		}
 		projectID = string(responseBody)
 	}
